@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FY27 Advancement Operations Calendar – University of Tennessee Foundation</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* UTK Brand: Tennessee Orange #FF8200 | Smokey Gray #4B4B4B | White #FFFFFF */
+  /* No true black. Orange NOT used for body text on white (WCAG). */
+  :root {
+    --ut-orange:       #FF8200;
+    --ut-orange-dark:  #CC6800;
+    --ut-orange-light: #FFF3E6;
+    --ut-orange-mid:   #FFD9AD;
+    --ut-smokey:       #4B4B4B;
+    --ut-smokey-light: #767676;
+    --ut-smokey-pale:  #F2F2F0;
+    --ut-smokey-mid:   #E0DFDB;
+    --ut-smokey-border:#C8C7C2;
+    --ut-white:        #FFFFFF;
+    --radius:          6px;
+    --radius-lg:       10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+    background: var(--ut-smokey-pale);
+    color: var(--ut-smokey);
+    font-size: 13px;
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--ut-white);
+    border-bottom: 1px solid var(--ut-smokey-mid);
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    gap: 14px;
+  }
+  .ut-wordmark {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .ut-logo img {
+    height: 36px;
+    width: auto;
+    display: block;
+  }
+  .header-divider { width: 1px; height: 32px; background: var(--ut-smokey-mid); margin: 0 4px; }
+  .header-fy {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ut-smokey);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    background: var(--ut-white);
+    border-bottom: 2px solid var(--ut-orange);
+    padding: 12px 24px;
+  }
+  .filter-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+  }
+  .fg { display: flex; flex-direction: column; gap: 3px; }
+  .fl {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ut-smokey-light);
+  }
+  select {
+    font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 28px 6px 10px;
+    border: 1px solid var(--ut-smokey-border);
+    border-radius: var(--radius);
+    background: var(--ut-white);
+    color: var(--ut-smokey);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234B4B4B' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    cursor: pointer;
+    min-width: 148px;
+    transition: border-color .15s;
+  }
+  select:hover { border-color: var(--ut-orange); }
+  select:focus { outline: none; border-color: var(--ut-orange); box-shadow: 0 0 0 3px rgba(255,130,0,0.15); }
+  .clear-btn {
+    font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border: 1px solid var(--ut-smokey-border);
+    border-radius: var(--radius);
+    background: var(--ut-white);
+    color: var(--ut-smokey-light);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: all .15s;
+  }
+  .clear-btn:hover { border-color: var(--ut-smokey); color: var(--ut-smokey); }
+
+  /* ── STATS BAR ── */
+  .stats-bar { background: var(--ut-orange); padding: 0 24px; }
+  .stats-inner { max-width: 1400px; margin: 0 auto; display: flex; }
+  .stat { padding: 10px 24px 10px 0; display: flex; align-items: baseline; gap: 6px; }
+  .stat + .stat { padding-left: 24px; border-left: 1px solid rgba(255,255,255,0.3); }
+  .stat-n { font-size: 22px; font-weight: 700; color: var(--ut-white); }
+  .stat-l { font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* ── MONTH TABS ── */
+  .tabs-bar { background: var(--ut-white); border-bottom: 1px solid var(--ut-smokey-mid); padding: 0 24px; }
+  .tabs-inner { max-width: 1400px; margin: 0 auto; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
+  .tabs-inner::-webkit-scrollbar { display: none; }
+  .tab {
+    font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 12px 16px;
+    border: none;
+    background: none;
+    color: var(--ut-smokey-light);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: all .15s;
+  }
+  .tab:hover { color: var(--ut-smokey); background: var(--ut-smokey-pale); }
+  .tab.active { color: var(--ut-smokey); border-bottom-color: var(--ut-orange); background: none; }
+
+  /* ── MAIN CONTENT ── */
+  .main { max-width: 1400px; margin: 0 auto; padding: 20px 24px 48px; }
+
+  /* ── CALENDAR GRID ── */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+
+  /* ── MONTH CARDS ── */
+  .card {
+    background: var(--ut-white);
+    border: 1px solid var(--ut-smokey-mid);
+    border-top: 3px solid var(--ut-orange);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .card-head {
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--ut-smokey-mid);
+    background: var(--ut-smokey-pale);
+  }
+  .mn {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ut-smokey);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .mc {
+    font-size: 10px;
+    font-weight: 700;
+    background: var(--ut-orange);
+    color: var(--ut-white);
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+  }
+  .elist { padding: 2px 0; overflow-y: auto; max-height: 300px; }
+
+  /* ── EVENT ITEMS ── */
+  .ei {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 7px 14px;
+    border-bottom: 1px solid var(--ut-smokey-pale);
+    transition: background .1s;
+  }
+  .ei:last-child { border-bottom: none; }
+  .ei:hover { background: var(--ut-smokey-pale); }
+  .edot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .ebody { flex: 1; min-width: 0; }
+  .ename { font-size: 12px; font-weight: 500; color: var(--ut-smokey); line-height: 1.4; }
+  .edate {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ut-orange-dark);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .edate.tbd { color: var(--ut-smokey-light); font-weight: 500; text-transform: none; letter-spacing: 0; }
+  .enote { font-size: 10px; color: var(--ut-smokey-light); font-style: italic; margin-top: 2px; line-height: 1.4; }
+  .etags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+  .tag {
+    font-size: 9px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  /* Tag colors — all use Smokey-family or orange-family, never black */
+  .tcat    { background: var(--ut-orange-light); color: var(--ut-orange-dark); border: 1px solid var(--ut-orange-mid); }
+  .tstaff  { background: #EEF0F5; color: #3A3F6B; border: 1px solid #C8CCDD; }
+  .toffice { background: #EFF5EE; color: #2D5A2A; border: 1px solid #C0D8BE; }
+  .tfreq   { background: var(--ut-smokey-pale); color: var(--ut-smokey-light); border: 1px solid var(--ut-smokey-border); }
+  .tdow    { background: #F5F0E8; color: #5A4A1E; border: 1px solid #DDD0B0; }
+
+  .empty { padding: 20px; text-align: center; color: var(--ut-smokey-light); font-size: 12px; }
+  .no-results { grid-column: 1/-1; padding: 48px; text-align: center; color: var(--ut-smokey-light); }
+  .no-results strong { display: block; font-size: 15px; font-weight: 700; margin-bottom: 6px; color: var(--ut-smokey); }
+
+  .single { background: var(--ut-white); border: 1px solid var(--ut-smokey-mid); border-top: 3px solid var(--ut-orange); border-radius: var(--radius-lg); overflow: hidden; }
+  .single .elist { max-height: none; }
+
+  .rsec { margin-bottom: 16px; }
+  .rlabel {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ut-smokey-light);
+    padding: 8px 0 6px;
+    border-bottom: 1px solid var(--ut-smokey-mid);
+    margin-bottom: 8px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--ut-smokey);
+    padding: 16px 24px;
+    text-align: center;
+  }
+  .footer p { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.06em; }
+  .footer span { color: var(--ut-orange); }
+
+  @media (max-width: 640px) {
+    .main, .filter-bar, .stats-bar, .tabs-bar { padding-left: 12px; padding-right: 12px; }
+    .grid { grid-template-columns: 1fr; }
+    .stat-n { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="ut-wordmark">
+      <div class="ut-logo">
+        <img src="https://giving.utk.edu/wp-content/uploads/2023/11/advancement_-_shortcut-1line__rgb_.png" alt="University of Tennessee Advancement" />
+      </div>
+    </div>
+    <div class="header-divider"></div>
+    <span class="header-fy">FY27 Calendar</span>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <div class="fg"><span class="fl">Office</span><select id="f-office"><option value="">All offices</option></select></div>
+    <div class="fg"><span class="fl">Staff</span><select id="f-staff"><option value="">All staff</option></select></div>
+    <div class="fg"><span class="fl">Category</span><select id="f-cat"><option value="">All categories</option></select></div>
+    <div class="fg"><span class="fl">Frequency</span><select id="f-freq"><option value="">All frequencies</option></select></div>
+    <button class="clear-btn" onclick="clearFilters()">Clear filters</button>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar"><div class="stats-inner" id="stats-row"></div></div>
+
+<!-- MONTH TABS -->
+<div class="tabs-bar"><div class="tabs-inner" id="month-tabs"></div></div>
+
+<!-- CALENDAR -->
+<div class="main" id="cal-body"></div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>University of Tennessee Foundation &nbsp;&bull;&nbsp; Fund Administration &nbsp;&bull;&nbsp; <span>FY2026–2027</span></p>
+</div>
+
+<script>
+const MONTHS=['July','August','September','October','November','December','January','February','March','April','May','June'];
+const SPECIAL=['As Needed','Repeats Weekly','Repeats every other week','Repeats every other month','Repeats monthly'];
+
+// Category dot colors — drawn from a UTK-adjacent palette, no pure black
+const DOTS={
+  'Meeting':          '#4A7FB5',
+  'Event':            '#4A8C45',
+  'Task':             '#CC6800',
+  'Celebration':      '#A03060',
+  'Messaging':        '#6655AA',
+  'Retreat':          '#B04020',
+  'Review / Check-In':'#2A8A6A',
+  'Community Information':'#767676',
+  'Lunch':            '#B08020',
+  'default':          '#767676'
+};
+
+const raw=[{"month": "August", "cat": "Meeting", "office": "Operations", "subj": "Advancement 101", "staff": "Adam", "freq": "quarterly", "date": "TBD", "dow": "Friday"}, {"month": "October", "cat": "Meeting", "office": "Operations", "subj": "Advancement 101", "staff": "Adam", "freq": "", "date": "Oct 23, 2026", "dow": "Friday"}, {"month": "December", "cat": "Meeting", "office": "Operations", "subj": "Advancement 101", "staff": "Adam", "freq": "", "date": "Dec 04, 2026", "dow": "Friday"}, {"month": "February", "cat": "Meeting", "office": "Operations", "subj": "Advancement 101", "staff": "Adam", "freq": "", "date": "Feb 12, 2027", "dow": "Friday"}, {"month": "April", "cat": "Meeting", "office": "Operations", "subj": "Advancement 101", "staff": "Adam", "freq": "", "date": "Apr 16, 2027", "dow": "Friday"}, {"month": "June", "cat": "Meeting", "office": "Operations", "subj": "Advancement 101", "staff": "Adam", "freq": "", "date": "Jun 11, 2027", "dow": "Friday"}, {"month": "August", "cat": "Celebration", "office": "Operations", "subj": "All Advancement + UTFI + UTIA + T-Fund Celebration", "staff": "Ginny", "freq": "annual", "date": "Aug 12, 2026", "dow": "TBD"}, {"month": "September", "cat": "Meeting", "office": "Operations", "subj": "All Advancement Staff Meeting", "staff": "", "freq": "quarterly", "date": "TBD", "dow": "TBD"}, {"month": "November", "cat": "Meeting", "office": "Operations", "subj": "All Advancement Staff Meeting", "staff": "", "freq": "quarterly", "date": "TBD", "dow": "TBD"}, {"month": "December", "cat": "Celebration", "office": "Operations", "subj": "All Advancement + UTIA + T-Fund Holiday Party", "staff": "", "freq": "annual", "date": "TBD", "dow": "TBD"}, {"month": "March", "cat": "Meeting", "office": "Operations", "subj": "All Advancement Staff Meeting", "staff": "", "freq": "quarterly", "date": "TBD", "dow": "TBD"}, {"month": "May", "cat": "Meeting", "office": "Operations", "subj": "All Advancement Staff Meeting", "staff": "", "freq": "quarterly", "date": "TBD", "dow": "TBD"}, {"month": "January", "cat": "Meeting", "office": "Exec Leadership", "subj": "Fundraising Summit - next event in Jan 2028", "staff": "Jane", "freq": "every other year", "date": "TBD", "dow": "TBD"}, {"month": "As Needed", "cat": "Meeting", "office": "Operations", "subj": "Advancement Town Hall", "staff": "Joe", "freq": "", "date": "TBD", "dow": "TBD"}, {"month": "August", "cat": "Meeting", "office": "Operations", "subj": "Supervisors Meeting - leadership development focused", "staff": "Adam", "freq": "bi-annual", "date": "TBD", "dow": "TBD"}, {"month": "August", "cat": "Meeting", "office": "Operations", "subj": "Non-Supervisor Meeting - leadership development focused", "staff": "Adam", "freq": "bi-annual", "date": "TBD", "dow": "TBD"}, {"month": "April", "cat": "Meeting", "office": "Operations", "subj": "Supervisors Meeting - operational/HR focused", "staff": "Adam", "freq": "bi-annual", "date": "TBD", "dow": "TBD"}, {"month": "April", "cat": "Meeting", "office": "Operations", "subj": "Non-Supervisor Meeting -  operational/HR focused", "staff": "Adam", "freq": "bi-annual", "date": "TBD", "dow": "TBD"}, {"month": "Repeats Weekly", "cat": "Meeting", "office": "Exec Leadership", "subj": "Executive Leadership Team 8:30am weekly / August - June (skip July)", "staff": "Joe", "freq": "weekly", "date": "TBD", "dow": "Tuesday"}, {"month": "Repeats every other week", "cat": "Meeting", "office": "Operations", "subj": "Senior Leadership Team: 1:30pm", "staff": "Adam", "freq": "every other week", "date": "TBD", "dow": "Monday"}, {"month": "August", "cat": "Meeting", "office": "Operations", "subj": "Combined ELT + SLT", "staff": "Adam", "freq": "bi-annual", "date": "TBD", "dow": "Tuesday"}, {"month": "April", "cat": "Retreat", "office": "Operations", "subj": "Combined ELT + SLT", "staff": "Adam", "freq": "bi-annual", "date": "TBD", "dow": "Tuesday"}, {"month": "Repeats monthly", "cat": "Meeting", "office": "AVCs", "subj": "Unit Lead Meeting - Check with True + Craig", "staff": "Jane", "freq": "monthly", "date": "TBD", "dow": "TBD"}, {"month": "Repeats every other month", "cat": "Meeting", "office": "AVCs", "subj": "CIA Unit Leads - check with AP", "staff": "Jane", "freq": "every other month", "date": "TBD", "dow": "Monday"}, {"month": "Repeats every other week", "cat": "Meeting", "office": "AVCs", "subj": "AVC Meeting - every other week - Wednesday 9am", "staff": "Jane", "freq": "every other week", "date": "TBD", "dow": "Wednesday"}, {"month": "", "cat": "Meeting", "office": "Annual Giving", "subj": "Annual Giving Team Meetings (invites Alumni, CDE, college AG)", "staff": "Erick", "freq": "", "date": "TBD", "dow": "TBD"}, {"month": "", "cat": "", "office": "CDE", "subj": "CDE All Staff Meetings", "staff": "Jessy", "freq": "", "date": "TBD", "dow": "TBD"}, {"month": "", "cat": "", "office": "Alumni", "subj": "Alumni Staff Meetings", "staff": "Duane", "freq": "", "date": "TBD", "dow": "TBD"}, {"month": "", "cat": "Retreat", "office": "Alumni", "subj": "Alumni Staff Retreat", "staff": "Duane", "freq": "annual", "date": "TBD", "dow": "TBD"}, {"month": "As Needed", "cat": "Meeting", "office": "Operations", "subj": "Lunch & Learns", "staff": "", "freq": "as needed", "date": "TBD", "dow": ""}, {"month": "September", "cat": "Review / Check-In", "office": "", "subj": "ACES Check-ins", "staff": "Leadership", "freq": "quarterly", "date": "TBD", "dow": "TBD"}, {"month": "December", "cat": "Review / Check-In", "office": "", "subj": "ACES Check-ins", "staff": "Leadership", "freq": "quarterly", "date": "TBD", "dow": "TBD"}, {"month": "March", "cat": "Review / Check-In", "office": "", "subj": "ACES Check-ins", "staff": "Leadership", "freq": "quarterly", "date": "TBD", "dow": "TBD"}, {"month": "June", "cat": "Review / Check-In", "office": "", "subj": "Performance Reviews", "staff": "Leadership", "freq": "annual", "date": "TBD", "dow": "TBD"}, {"month": "June", "cat": "Review / Check-In", "office": "", "subj": "Compliance Review / Training - UTFI", "staff": "Leadership", "freq": "annual", "date": "TBD", "dow": "TBD"}, {"month": "April", "cat": "Task", "office": "", "subj": "Next FY Goal Setting Division", "staff": "Leadership", "freq": "annual", "date": "TBD", "dow": "TBD"}, {"month": "May", "cat": "Task", "office": "", "subj": "Next FY Goal Setting Team", "staff": "Leadership", "freq": "annual", "date": "TBD", "dow": "TBD"}, {"month": "June", "cat": "Task", "office": "", "subj": "Next FY Goal Setting Individual", "staff": "Leadership", "freq": "annual", "date": "TBD", "dow": "TBD"}, {"month": "February", "cat": "Task", "office": "Operations", "subj": "Budgets: Internal Advancement Budget Managers - worksheet", "staff": "Adam", "freq": "", "date": "TBD", "dow": ""}, {"month": "May", "cat": "Task", "office": "Operations", "subj": "Budgets: Internal Advancement Finals Due to UTFI", "staff": "Adam", "freq": "", "date": "TBD", "dow": ""}, {"month": "May", "cat": "Messaging", "office": "Operations", "subj": "Budgets: Campus Partners budget memo about next year transfer", "staff": "Adam", "freq": "", "date": "TBD", "dow": ""}, {"month": "May", "cat": "Meeting", "office": "Operations", "subj": "Scholarship / Endow - budget managers FY meeting", "staff": "Taylor", "freq": "", "date": "TBD", "dow": ""}, {"month": "October", "cat": "Meeting", "office": "Operations", "subj": "Scholarship / Endow - AVCs + budget managers future budget planning", "staff": "Taylor", "freq": "", "date": "TBD", "dow": ""}, {"month": "January", "cat": "Task", "office": "", "subj": "Plus Delta Cohort selections", "staff": "", "freq": "", "date": "TBD", "dow": ""}, {"month": "", "cat": "Meeting", "office": "", "subj": "Plus Delta Cohort begins - how often do they meet?", "staff": "", "freq": "", "date": "TBD", "dow": ""}, {"month": "May", "cat": "Messaging", "office": "Operations", "subj": "Football parking & ticket requests \u2013 Form sent first week of May (?)", "staff": "", "freq": "annual", "date": "May 01, 2027", "dow": ""}, {"month": "June", "cat": "Task", "office": "Operations", "subj": "Football parking & ticket requests - Due June", "staff": "", "freq": "annual", "date": "Jun 30, 2027", "dow": ""}, {"month": "July", "cat": "Messaging", "office": "Operations", "subj": "Football parking & ticket requests - Confirmations late July", "staff": "", "freq": "annual", "date": "Jul 31, 2026", "dow": ""}, {"month": "As Needed", "cat": "Messaging", "office": "Operations", "subj": "Football parking & ticket requests - Post season as needed", "staff": "", "freq": "as needed", "date": "Dec 01, 2026", "dow": ""}, {"month": "August", "cat": "Messaging", "office": "Operations", "subj": "Basketball parking & ticket requests \u2013 Form sent last week of August", "staff": "", "freq": "annual", "date": "Aug 28, 2026", "dow": ""}, {"month": "September", "cat": "Task", "office": "Operations", "subj": "Basketball parking & ticket requests - Due end of September", "staff": "", "freq": "annual", "date": "Sep 28, 2026", "dow": ""}, {"month": "October", "cat": "Messaging", "office": "Operations", "subj": "Basketball parking & ticket requests - Confirmations in October", "staff": "", "freq": "annual", "date": "Oct 19, 2026", "dow": ""}, {"month": "As Needed", "cat": "Messaging", "office": "Operations", "subj": "Basketball parking & ticket requests - Post season as needed", "staff": "", "freq": "as needed", "date": "Mar 01, 2027", "dow": ""}, {"month": "December", "cat": "Messaging", "office": "Operations", "subj": "Baseball parking & ticket requests \u2013 Form sent mid-December", "staff": "", "freq": "annual", "date": "Dec 15, 2026", "dow": ""}, {"month": "January", "cat": "Task", "office": "Operations", "subj": "Baseball parking & ticket requests - Due end of January", "staff": "", "freq": "annual", "date": "Jan 29, 2027", "dow": ""}, {"month": "February", "cat": "Messaging", "office": "Operations", "subj": "Baseball parking & ticket requests - Confirmations in February", "staff": "", "freq": "annual", "date": "Feb 08, 2027", "dow": ""}, {"month": "As Needed", "cat": "Messaging", "office": "Operations", "subj": "Baseball parking & ticket requests - Post season as needed", "staff": "", "freq": "as needed", "date": "May 01, 2027", "dow": ""}, {"month": "Repeats monthly", "cat": "Messaging", "office": "Operations", "subj": "Career Enhancement - Monthly reminders start in January", "staff": "Adam", "freq": "monthly", "date": "TBD", "dow": ""}, {"month": "April", "cat": "Task", "office": "Operations", "subj": "Career Enhancement - due mid-April // Merit request", "staff": "Adam", "freq": "annual", "date": "Apr 09, 2027", "dow": ""}, {"month": "April", "cat": "Task", "office": "Operations", "subj": "Career Enhancement - due mid-April // Role Changes, reclass, career track", "staff": "Adam", "freq": "annual", "date": "Apr 09, 2027", "dow": ""}, {"month": "April", "cat": "Task", "office": "Operations", "subj": "Career Enhancement - due mid-April // Leadership Cohort", "staff": "Adam", "freq": "annual", "date": "Apr 09, 2027", "dow": ""}, {"month": "As Needed", "cat": "Messaging", "office": "Operations", "subj": "Dean Communications Cadence", "staff": "Mallorie", "freq": "", "date": "TBD", "dow": ""}, {"month": "As Needed", "cat": "Messaging", "office": "Operations", "subj": "Dean Communications Post Season Football", "staff": "Mallorie", "freq": "", "date": "TBD", "dow": ""}, {"month": "As Needed", "cat": "Messaging", "office": "Operations", "subj": "Campus Partner Communication", "staff": "Mallorie", "freq": "", "date": "TBD", "dow": ""}, {"month": "March", "cat": "Celebration", "office": "Operations", "subj": "Advancement Staff Appreciation Day", "staff": "", "freq": "annual", "date": "TBD", "dow": ""}, {"month": "April", "cat": "Retreat", "office": "Operations", "subj": "Administrative Professionals Retreat", "staff": "Ashley", "freq": "annual", "date": "TBD", "dow": ""}, {"month": "June", "cat": "Task", "office": "Operations", "subj": "Staff parking referrals - due to Betsy end of June", "staff": "", "freq": "annual", "date": "TBD", "dow": ""}, {"month": "May", "cat": "Messaging", "office": "Operations", "subj": "Staff parking referrals - requests", "staff": "", "freq": "annual", "date": "TBD", "dow": ""}, {"month": "March", "cat": "Task", "office": "Operations", "subj": "Space Inventory Audit - Debbie Sharp", "staff": "", "freq": "annual", "date": "TBD", "dow": ""}, {"month": "June", "cat": "Task", "office": "Operations", "subj": "Advancement Staff Gifting Plan", "staff": "", "freq": "annual", "date": "TBD", "dow": ""}, {"month": "July", "cat": "Lunch", "office": "Exec Leadership", "subj": "UTFI Leadership Cohort - All cohort lunch summer", "staff": "Ginny", "freq": "annual", "date": "TBD", "dow": ""}, {"month": "September", "cat": "Meeting", "office": "Exec Leadership", "subj": "UTFI Leadership Cohort - Onsite Workshop #1", "staff": "", "freq": "as needed", "date": "TBD", "dow": ""}, {"month": "October", "cat": "Meeting", "office": "Exec Leadership", "subj": "UTFI Leadership Cohort - Virtual Group Coaching #1", "staff": "", "freq": "as needed", "date": "TBD", "dow": ""}, {"month": "February", "cat": "Meeting", "office": "Exec Leadership", "subj": "UTFI Leadership Cohort - Onsite Workshop #2", "staff": "", "freq": "as needed", "date": "TBD", "dow": ""}, {"month": "April", "cat": "Meeting", "office": "Exec Leadership", "subj": "UTFI Leadership Cohort -Virtual Group Coaching #2", "staff": "", "freq": "as needed", "date": "TBD", "dow": ""}, {"month": "May", "cat": "Meeting", "office": "Exec Leadership", "subj": "UTFI Leadership Cohort - Onsite Workshop #3", "staff": "", "freq": "as needed", "date": "TBD", "dow": ""}, {"month": "June", "cat": "Task", "office": "Operations", "subj": "Intern Posting", "staff": "Ashley", "freq": "", "date": "TBD", "dow": ""}, {"month": "August", "cat": "Meeting", "office": "Operations", "subj": "Intern Selection", "staff": "Ashley", "freq": "", "date": "TBD", "dow": ""}, {"month": "April", "cat": "Meeting", "office": "Operations", "subj": "Intern Showcase", "staff": "Ashley", "freq": "", "date": "TBD", "dow": ""}, {"month": "March", "cat": "Task", "office": "Operations", "subj": "Summer intern selection", "staff": "Ashley", "freq": "", "date": "TBD", "dow": ""}, {"month": "", "cat": "Meeting", "office": "Operations", "subj": "Intern Cohort Meetings", "staff": "Ashley", "freq": "monthly", "date": "TBD", "dow": ""}, {"month": "September", "cat": "Event", "office": "Alumni", "subj": "Alumni Awards Gala", "staff": "Duane", "freq": "", "date": "TBD", "dow": ""}, {"month": "February", "cat": "Event", "office": "Alumni", "subj": "Alumni 40 Under 40 (every other year)", "staff": "Duane", "freq": "", "date": "TBD", "dow": ""}, {"month": "February", "cat": "Event", "office": "Alumni", "subj": "Alumni Rocky Top Business Awards (every other year)", "staff": "Duane", "freq": "", "date": "Feb 26, 2027", "dow": "Friday"}, {"month": "September", "cat": "Event", "office": "Alumni", "subj": "Alumni Home Sweet Home Tailgate (add additional dates)", "staff": "Duane", "freq": "", "date": "TBD", "dow": ""}, {"month": "September", "cat": "Event", "office": "Alumni", "subj": "Alumni Rocky Top on the Road", "staff": "Duane", "freq": "", "date": "TBD", "dow": ""}, {"month": "August", "cat": "Event", "office": "Operations", "subj": "Big Orange Receptions - Belle Meade", "staff": "Ginny", "freq": "annual", "date": "TBD", "dow": ""}, {"month": "As Needed", "cat": "Event", "office": "Operations", "subj": "Big Orange Receptions - 3-4 per fall", "staff": "Ginny", "freq": "as needed", "date": "TBD", "dow": ""}, {"month": "August", "cat": "Community Information", "office": "", "subj": "KCS 1/2 Day", "staff": "Ginny", "freq": "informational only", "date": "Aug 10, 2026", "dow": ""}, {"month": "September", "cat": "Community Information", "office": "", "subj": "KCS 1/2 Day", "staff": "Ginny", "freq": "informational only", "date": "Sep 16, 2026", "dow": ""}, {"month": "November", "cat": "Community Information", "office": "", "subj": "KCS 1/2 Day", "staff": "Ginny", "freq": "informational only", "date": "Nov 18, 2026", "dow": ""}, {"month": "December", "cat": "Community Information", "office": "", "subj": "KCS 1/2 Day", "staff": "Ginny", "freq": "informational only", "date": "Dec 18, 2026", "dow": ""}, {"month": "January", "cat": "Community Information", "office": "", "subj": "KCS 1/2 Day", "staff": "Ginny", "freq": "informational only", "date": "Jan 27, 2027", "dow": ""}, {"month": "March", "cat": "Community Information", "office": "", "subj": "KCS 1/2 Day", "staff": "Ginny", "freq": "informational only", "date": "Mar 24, 2027", "dow": ""}, {"month": "August", "cat": "Community Information", "office": "", "subj": "First Day of School - KCS", "staff": "Ginny", "freq": "informational only", "date": "Aug 10, 2026", "dow": ""}, {"month": "August", "cat": "Community Information", "office": "", "subj": "First Day of School - MCS", "staff": "Ginny", "freq": "informational only", "date": "Aug 03, 2026", "dow": ""}, {"month": "August", "cat": "Community Information", "office": "", "subj": "First Day of School - Sacred Heart / Catholic", "staff": "Ginny", "freq": "informational only", "date": "Aug 07, 2026", "dow": ""}, {"month": "August", "cat": "Community Information", "office": "", "subj": "First Day of Class UTK", "staff": "Ginny", "freq": "informational only", "date": "Aug 17, 2026", "dow": ""}, {"month": "October", "cat": "Community Information", "office": "", "subj": "Fall Break - KCS", "staff": "Ginny", "freq": "informational only", "date": "10/5-9/2026", "dow": ""}, {"month": "October", "cat": "Community Information", "office": "", "subj": "Fall Break - MCS", "staff": "Ginny", "freq": "informational only", "date": "10/5-9/2026", "dow": ""}, {"month": "October", "cat": "Community Information", "office": "", "subj": "Fall Break - Sacred Heart / Catholic", "staff": "Ginny", "freq": "informational only", "date": "10/5-9/2026", "dow": ""}, {"month": "October", "cat": "Community Information", "office": "", "subj": "Fall Break - UTK (M-Tu)", "staff": "Ginny", "freq": "informational only", "date": "Oct 05, 2026", "dow": ""}, {"month": "November", "cat": "Community Information", "office": "", "subj": "Election Day - no school/class - KCS, MCS, UTK", "staff": "Ginny", "freq": "informational only", "date": "Nov 03, 2026", "dow": ""}, {"month": "November", "cat": "Community Information", "office": "", "subj": "Thanksgiving - KCS, MCS, SHCS, Catholic, UTK", "staff": "Ginny", "freq": "informational only", "date": "Nov 25, 2026", "dow": ""}, {"month": "December", "cat": "Community Information", "office": "", "subj": "Christmas Break - KCS, SHCS, Catholic", "staff": "Ginny", "freq": "informational only", "date": "12/18/2026 - 1/4/2027", "dow": ""}, {"month": "December", "cat": "Community Information", "office": "", "subj": "Christmas Break - MCS", "staff": "Ginny", "freq": "informational only", "date": "12/17/2026 - 1/4/2027", "dow": ""}, {"month": "December", "cat": "Community Information", "office": "", "subj": "Christmas Break - UTK", "staff": "Ginny", "freq": "informational only", "date": "TBD", "dow": ""}, {"month": "February", "cat": "Community Information", "office": "", "subj": "Inservice - KCS, MCS", "staff": "Ginny", "freq": "informational only", "date": "Feb 15, 2027", "dow": ""}, {"month": "March", "cat": "Community Information", "office": "", "subj": "Spring Break - KCS", "staff": "Ginny", "freq": "informational only", "date": "3/8-12/27", "dow": ""}, {"month": "March", "cat": "Community Information", "office": "", "subj": "Spring Break - MCS", "staff": "Ginny", "freq": "informational only", "date": "3/15-19/27", "dow": ""}, {"month": "March", "cat": "Community Information", "office": "", "subj": "Spring Break - Sacred Heart / Catholic", "staff": "Ginny", "freq": "informational only", "date": "3/9-13/27", "dow": ""}, {"month": "March", "cat": "Community Information", "office": "", "subj": "Spring Break - UTK", "staff": "Ginny", "freq": "informational only", "date": "3/9-13/27", "dow": ""}, {"month": "March", "cat": "Community Information", "office": "", "subj": "Spring Holiday / Easter - KCS", "staff": "Ginny", "freq": "informational only", "date": "3/26-29/27", "dow": ""}, {"month": "March", "cat": "Community Information", "office": "", "subj": "Spring Holiday / Easter - MCS", "staff": "Ginny", "freq": "informational only", "date": "Mar 26, 2027", "dow": ""}, {"month": "March", "cat": "Community Information", "office": "", "subj": "Spring Holiday / Easter - Sacred Heart / Catholic", "staff": "Ginny", "freq": "informational only", "date": "3/26-29/27", "dow": ""}, {"month": "March", "cat": "Community Information", "office": "", "subj": "Spring Holiday / Easter - UTK", "staff": "Ginny", "freq": "informational only", "date": "3/25-26/27", "dow": ""}, {"month": "April", "cat": "Community Information", "office": "", "subj": "Inservice - KCS", "staff": "Ginny", "freq": "informational only", "date": "Apr 07, 2027", "dow": ""}, {"month": "April", "cat": "Community Information", "office": "", "subj": "Inservice - Sacred Heart / Catholic", "staff": "Ginny", "freq": "informational only", "date": "Apr 16, 2027", "dow": ""}, {"month": "May", "cat": "Community Information", "office": "", "subj": "Last Day of School - KCS 1/2 Day", "staff": "Ginny", "freq": "informational only", "date": "May 26, 2027", "dow": ""}, {"month": "May", "cat": "Community Information", "office": "", "subj": "Last Day of School - MCS 1/2 Day", "staff": "Ginny", "freq": "informational only", "date": "May 20, 2027", "dow": ""}, {"month": "May", "cat": "Community Information", "office": "", "subj": "Last Day of School - Sacred Heart / Catholic", "staff": "Ginny", "freq": "informational only", "date": "May 27, 2027", "dow": ""}, {"month": "May", "cat": "Community Information", "office": "", "subj": "UTK Graduation TBD", "staff": "Ginny", "freq": "informational only", "date": "TBD", "dow": ""}, {"month": "September", "cat": "Event", "office": "Operations", "subj": "It Takes a Volunteer Evening Launch", "staff": "Ginny", "freq": "one time", "date": "Sep 18, 2026", "dow": "Friday"}, {"month": "September", "cat": "Event", "office": "Operations", "subj": "It Takes a Volunteer Community Launch", "staff": "Ginny", "freq": "one time", "date": "Sep 18, 2026", "dow": "Friday"}, {"month": "", "cat": "Event", "office": "Annual Giving", "subj": "Big Orange Give (typically in the fall - 2027 will be in the spring)", "staff": "Erick", "freq": "annual", "date": "TBD", "dow": ""}, {"month": "", "cat": "Event", "office": "CDE", "subj": "Grateful Vol Day", "staff": "", "freq": "annual", "date": "TBD", "dow": ""}, {"month": "September", "cat": "Event", "office": "Alumni", "subj": "Alumni Board of Directors", "staff": "", "freq": "quarterly", "date": "TBD", "dow": ""}, {"month": "February", "cat": "Event", "office": "Alumni", "subj": "Alumni Board of Directors", "staff": "", "freq": "quarterly", "date": "TBD", "dow": ""}, {"month": "April", "cat": "Event", "office": "Alumni", "subj": "Alumni Board of Directors", "staff": "", "freq": "quarterly", "date": "TBD", "dow": ""}, {"month": "", "cat": "Meeting", "office": "Alumni", "subj": "Chancellor's Associate Meetings", "staff": "", "freq": "", "date": "TBD", "dow": ""}, {"month": "", "cat": "", "office": "Alumni", "subj": "Welcome Wednesday", "staff": "", "freq": "", "date": "TBD", "dow": ""}, {"month": "", "cat": "", "office": "Alumni", "subj": "Young Alumni Meeting", "staff": "", "freq": "", "date": "TBD", "dow": ""}, {"month": "August", "cat": "Meeting", "office": "Operations", "subj": "All Development Meeting \u2013 SU169 (3:30\u20135:00pm)", "staff": "Jane", "freq": "every other month", "date": "Aug 24, 2026", "dow": "Monday", "note": "Students back on campus; student speaker possible. After ELT/SLT goal setting retreat 8/18."}, {"month": "October", "cat": "Meeting", "office": "Operations", "subj": "All Development Meeting \u2013 SU169 (3:30\u20135:00pm)", "staff": "Jane", "freq": "every other month", "date": "Oct 26, 2026", "dow": "Monday", "note": "Same day as All Advancement breakfast & meeting (fall all-staff)."}, {"month": "December", "cat": "Meeting", "office": "Operations", "subj": "All Development Meeting \u2013 SU169 (3:30\u20135:00pm)", "staff": "Jane", "freq": "every other month", "date": "Dec 07, 2026", "dow": "Sunday", "note": "Can be same day as Holiday Luncheon."}, {"month": "February", "cat": "Meeting", "office": "Operations", "subj": "All Development Meeting \u2013 SU169 (3:30\u20135:00pm)", "staff": "Jane", "freq": "every other month", "date": "Feb 22, 2027", "dow": "Monday", "note": "Same day as All Advancement breakfast & meeting (spring all-staff)."}, {"month": "April", "cat": "Meeting", "office": "Operations", "subj": "All Development Meeting \u2013 SU 169 (3:30\u20135:00pm)", "staff": "Jane", "freq": "every other month", "date": "Apr 19, 2027", "dow": "Sunday", "note": ""}, {"month": "June", "cat": "Meeting", "office": "Operations", "subj": "All Development Meeting \u2013 SU 169 (3:30\u20135:00pm)", "staff": "Jane", "freq": "every other month", "date": "Jun 14, 2027", "dow": "Sunday", "note": "Leaves 2 weeks remaining in the FY."}, {"month": "October", "cat": "Meeting", "office": "Operations", "subj": "All Advancement Staff Meeting \u2013 SU272 Pilot Company Ballroom (8:00\u201310:30am, breakfast)", "staff": "", "freq": "bi-annual", "date": "Oct 26, 2026", "dow": "Monday", "note": "Only all-staff meeting in the fall. Breakfast served."}, {"month": "February", "cat": "Meeting", "office": "Operations", "subj": "All Advancement Staff Meeting \u2013 SU272 Pilot Company Ballroom (8:00\u201310:30am, breakfast)", "staff": "", "freq": "bi-annual", "date": "Feb 22, 2027", "dow": "Monday", "note": "Only all-staff meeting in the spring. Breakfast served."}, {"month": "August", "cat": "Celebration", "office": "Operations", "subj": "FY26 Celebration \u2013 Yee Haw Knoxville (3:00\u20135:00pm, heavy apps)", "staff": "Ginny", "freq": "annual", "date": "Aug 19, 2026", "dow": "Wednesday", "note": "Pending venue confirmation. Outlook invite to follow."}, {"month": "December", "cat": "Celebration", "office": "Operations", "subj": "Holiday Luncheon (11:00am\u20131:00pm, full meal)", "staff": "", "freq": "annual", "date": "Dec 07, 2026", "dow": "Monday", "note": "Can be same day as All Development Meeting."}];
+
+let filters={office:'',staff:'',cat:'',freq:''};
+let activeTab='all';
+
+function getFiltered(){
+  return raw.filter(e=>{
+    if(filters.office&&e.office!==filters.office)return false;
+    if(filters.staff&&e.staff!==filters.staff)return false;
+    if(filters.cat&&e.cat!==filters.cat)return false;
+    if(filters.freq&&e.freq!==filters.freq)return false;
+    return true;
+  });
+}
+
+function populateFilters(){
+  const o=[...new Set(raw.map(e=>e.office).filter(Boolean))].sort();
+  const s=[...new Set(raw.map(e=>e.staff).filter(Boolean))].sort();
+  const c=[...new Set(raw.map(e=>e.cat).filter(Boolean))].sort();
+  const f=[...new Set(raw.map(e=>e.freq).filter(Boolean))].sort();
+  const fill=(id,arr,key)=>{
+    const sel=document.getElementById(id);
+    arr.forEach(v=>{const opt=document.createElement('option');opt.value=v;opt.textContent=v;sel.appendChild(opt);});
+    sel.addEventListener('change',()=>{filters[key]=sel.value;render();});
+  };
+  fill('f-office',o,'office');fill('f-staff',s,'staff');fill('f-cat',c,'cat');fill('f-freq',f,'freq');
+}
+
+function clearFilters(){
+  filters={office:'',staff:'',cat:'',freq:''};
+  ['f-office','f-staff','f-cat','f-freq'].forEach(id=>document.getElementById(id).value='');
+  render();
+}
+
+function buildTabs(data){
+  const months=MONTHS.filter(m=>data.some(e=>e.month===m));
+  const hasSpecial=data.some(e=>SPECIAL.includes(e.month));
+  const hasUnscheduled=data.some(e=>!e.month);
+  const tabs=[{id:'all',label:'All'},...months.map(m=>({id:m,label:m}))];
+  if(hasSpecial)tabs.push({id:'recurring',label:'Recurring'});
+  if(hasUnscheduled)tabs.push({id:'unscheduled',label:'Unscheduled'});
+  const cont=document.getElementById('month-tabs');
+  cont.innerHTML='';
+  tabs.forEach(t=>{
+    const el=document.createElement('button');
+    el.className='tab'+(activeTab===t.id?' active':'');
+    el.textContent=t.label;
+    el.onclick=()=>{activeTab=t.id;render();};
+    cont.appendChild(el);
+  });
+}
+
+function buildStats(data){
+  const total=data.length;
+  const sched=data.filter(e=>MONTHS.includes(e.month)).length;
+  const recur=data.filter(e=>SPECIAL.includes(e.month)).length;
+  const withDate=data.filter(e=>e.date&&e.date!=='TBD').length;
+  document.getElementById('stats-row').innerHTML=
+    `<div class="stat"><span class="stat-n">${total}</span><span class="stat-l">Total</span></div>`+
+    `<div class="stat"><span class="stat-n">${sched}</span><span class="stat-l">Scheduled</span></div>`+
+    `<div class="stat"><span class="stat-n">${recur}</span><span class="stat-l">Recurring</span></div>`+
+    `<div class="stat"><span class="stat-n">${withDate}</span><span class="stat-l">With Dates</span></div>`;
+}
+
+function eventHTML(e){
+  const dot=DOTS[e.cat]||DOTS['default'];
+  const isDate=e.date&&e.date!=='TBD';
+  const dowPart=(e.dow&&e.dow!=='TBD'&&e.dow)?e.dow+' · ':'';
+  const dateLine=`<div class="edate${isDate?'':' tbd'}">${isDate?dowPart+e.date:'TBD'}</div>`;
+  const noteLine=e.note?`<div class="enote">${e.note}</div>`:'';
+  const tags=[];
+  if(e.cat)tags.push(`<span class="tag tcat">${e.cat}</span>`);
+  if(e.staff)tags.push(`<span class="tag tstaff">${e.staff}</span>`);
+  if(e.office)tags.push(`<span class="tag toffice">${e.office}</span>`);
+  if(e.freq)tags.push(`<span class="tag tfreq">${e.freq}</span>`);
+  return `<div class="ei">
+    <div class="edot" style="background:${dot}"></div>
+    <div class="ebody">
+      <div class="ename">${e.subj}</div>
+      ${dateLine}
+      ${noteLine}
+      <div class="etags">${tags.join('')}</div>
+    </div>
+  </div>`;
+}
+
+function makeCard(label, evts, noMaxHeight){
+  const d=document.createElement('div');
+  d.className='card';
+  d.innerHTML=`<div class="card-head"><span class="mn">${label}</span><span class="mc">${evts.length}</span></div>`+
+    `<div class="elist"${noMaxHeight?' style="max-height:none"':''}>${evts.map(eventHTML).join('')}</div>`;
+  return d;
+}
+
+function renderCalendar(data){
+  const body=document.getElementById('cal-body');
+  body.innerHTML='';
+
+  if(activeTab==='all'){
+    const grid=document.createElement('div');grid.className='grid';
+    const groups={};
+    [...MONTHS,'As Needed','Recurring','Unscheduled'].forEach(m=>groups[m]=[]);
+    data.forEach(e=>{
+      if(MONTHS.includes(e.month))groups[e.month].push(e);
+      else if(e.month==='As Needed')groups['As Needed'].push(e);
+      else if(SPECIAL.includes(e.month))groups['Recurring'].push(e);
+      else groups['Unscheduled'].push(e);
+    });
+    const toShow=[...MONTHS,'As Needed','Recurring','Unscheduled'].filter(m=>groups[m]&&groups[m].length>0);
+    if(!toShow.length){
+      grid.innerHTML='<div class="no-results"><strong>No items found</strong>Try adjusting your filters above.</div>';
+    } else {
+      toShow.forEach(m=>grid.appendChild(makeCard(m,groups[m],false)));
+    }
+    body.appendChild(grid);
+
+  } else if(activeTab==='recurring'){
+    const labels={'Repeats Weekly':'Every week','Repeats every other week':'Every other week','Repeats monthly':'Monthly','Repeats every other month':'Every other month','As Needed':'As needed'};
+    let found=false;
+    SPECIAL.forEach(m=>{
+      const evts=data.filter(e=>e.month===m);
+      if(!evts.length)return;
+      found=true;
+      const sec=document.createElement('div');sec.className='rsec';
+      sec.innerHTML=`<div class="rlabel">${labels[m]||m}</div>`;
+      const card=makeCard(labels[m]||m,evts,true);
+      sec.appendChild(card);
+      body.appendChild(sec);
+    });
+    if(!found)body.innerHTML='<div class="no-results"><strong>No recurring items</strong>Try adjusting filters.</div>';
+
+  } else if(activeTab==='unscheduled'){
+    const evts=data.filter(e=>!e.month);
+    const card=document.createElement('div');card.className='single';
+    card.innerHTML=`<div class="card-head"><span class="mn">Unscheduled</span><span class="mc">${evts.length}</span></div>`+
+      `<div class="elist" style="max-height:none">${evts.length?evts.map(eventHTML).join(''):'<div class="empty">No unscheduled items match filters.</div>'}</div>`;
+    body.appendChild(card);
+
+  } else {
+    const evts=data.filter(e=>e.month===activeTab);
+    const card=document.createElement('div');card.className='single';
+    card.innerHTML=`<div class="card-head"><span class="mn">${activeTab}</span><span class="mc">${evts.length} item${evts.length!==1?'s':''}</span></div>`+
+      `<div class="elist" style="max-height:none">${evts.length?evts.map(eventHTML).join(''):'<div class="empty">No items match filters for this month.</div>'}</div>`;
+    body.appendChild(card);
+  }
+}
+
+function render(){
+  const data=getFiltered();
+  buildTabs(data);
+  buildStats(data);
+  renderCalendar(data);
+}
+
+populateFilters();
+render();
+</script>
+</body>
+</html>
