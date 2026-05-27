@@ -333,6 +333,16 @@ const DOTS={
 
 let raw=[];
 
+function parseDate(val){
+  if(!val||val==='TBD')return val;
+  // Excel serial numbers are pure integers; convert to readable date
+  if(/^\d+$/.test(String(val).trim())){
+    const d=new Date((parseInt(val,10)-25569)*86400*1000);
+    return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  }
+  return val;
+}
+
 fetch('data.json')
   .then(r=>r.json())
   .then(data=>{raw=data;populateFilters();render();})
@@ -403,9 +413,10 @@ function buildStats(data){
 
 function eventHTML(e){
   const dot=DOTS[e.cat]||DOTS['default'];
-  const isDate=e.date&&e.date!=='TBD';
+  const displayDate=parseDate(e.date);
+  const isDate=displayDate&&displayDate!=='TBD';
   const dowPart=(e.dow&&e.dow!=='TBD'&&e.dow)?e.dow+' · ':'';
-  const dateLine=`<div class="edate${isDate?'':' tbd'}">${isDate?dowPart+e.date:'TBD'}</div>`;
+  const dateLine=`<div class="edate${isDate?'':' tbd'}">${isDate?dowPart+displayDate:'TBD'}</div>`;
   const noteLine=e.note?`<div class="enote">${e.note}</div>`:'';
   const tags=[];
   if(e.cat)tags.push(`<span class="tag tcat">${e.cat}</span>`);
